@@ -1,5 +1,11 @@
 {% extends "blog/base.html" %}
 {% block content %}
+<div>
+  {% if message %}
+  <div class="alert alert-success" style="margin: 10px;">{{ message }}<button class="del-msg delete"
+      onclick="document.getElementsByClassName('notification')[0].style.display='none'"></button></div>
+  {% endif %}
+</div>
     {% for post in posts %}
     <article class="media content-section">
         <div class="media-body">
