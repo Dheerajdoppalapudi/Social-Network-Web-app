@@ -5,6 +5,7 @@ from .forms import UserRegisterForm
 from django.contrib.auth.decorators import login_required
 from blog.models import Post
 from .models import User
+import datetime
 
 # Create your views here.
 def register(request):
@@ -43,3 +44,23 @@ def specific_blog(request, username, title):
             "user_post": post
         }
     return render(request, 'users/userblog.html', context)
+
+@login_required
+def addPost(request):
+    if request.method == 'POST':
+        if 'data' in request.POST:
+            blog_title = request.POST['title']
+            blog_data = request.POST['data']
+            current_user = request.user
+            # print(current_user)
+            # print(type(current_user))
+            # print(current_user.id)
+            object = Post.objects.create(title=blog_title, content=blog_data, date_posted=datetime.datetime.now(), author=current_user)
+            object.save()
+            print("This Works and object saved!!!")
+    context = {
+        'message': 'Your Post has been Added !!! ',
+        'posts': Post.objects.all(),
+        'user': request.user
+    }
+    return render(request, 'blog/home.html', context) 
