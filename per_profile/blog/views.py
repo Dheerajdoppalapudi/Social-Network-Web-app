@@ -9,12 +9,13 @@ from django.http import Http404
 @login_required
 def home(request):
     context = {
-        'posts': Post.objects.all()
+        'posts': Post.objects.all(),
+        'user': request.user
     }
     return render(request, 'blog/home.html', context)
 
 def about(request):
-    return render(request, 'blog/about.html', {'title': 'About'})
+    return render(request, 'blog/about.html', {'title': 'About', 'user': request.user})
 
 @login_required
 def search_name(request):
@@ -33,7 +34,8 @@ def search_name(request):
             post = Post.objects.filter(author=current_user)
             context = {
                 "user_posts": post,
-                "queried_user": form_data
+                "queried_user": form_data,
+                'user': request.user
             }
             return render(request, 'blog/search.html', context)
         except User.DoesNotExist:
@@ -41,7 +43,8 @@ def search_name(request):
                 post = Post.objects.filter(title__contains=form_data)
                 context = {
                     "user_posts": post,
-                    "queried_user": form_data
+                    "queried_user": form_data,
+                    'user': request.user
                 }
                 return render(request, 'blog/search.html', context)
             except Post.DoesNotExist:
@@ -49,6 +52,7 @@ def search_name(request):
         context = {
             "queried_user": form_data,
             "message": "nothing matched your search result",
+            'user': request.user
         }
         return render(request, 'blog/search.html', context)
 
